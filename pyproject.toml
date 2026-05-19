@@ -1,0 +1,14 @@
+[project]
+name = "toposcript"
+version = "0.1.0"
+description = "Measurement automation for TOPO and OMH optical setup."
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+instruments = [
+  "pyvisa>=1.14",
+]
+
+[tool.ruff]
+line-length = 100

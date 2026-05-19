@@ -1,0 +1,14 @@
+[topo]
+host = "192.168.0.10"
+port = 5025
+
+[omh]
+resource = "GPIB0::5::INSTR"
+
+[sweep]
+start_wavelength_nm = 1500.0
+end_wavelength_nm = 1502.0
+step_nm = 0.5
+settling_time_s = 0.5
+readings_per_point = 3
+output_dir = "data"
