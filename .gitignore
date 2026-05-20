@@ -1,9 +1,4 @@
+.vs/
 __pycache__/
-*.py[cod]
-.venv/
-venv/
-data/*.csv
-data/*.json
-!data/.gitkeep
-.pytest_cache/
-.ruff_cache/
+*.pyc
+data/omh_logs/

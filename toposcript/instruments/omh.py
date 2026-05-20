@@ -1,59 +1,87 @@
-from __future__ import annotations
-
-import math
-import random
-from dataclasses import dataclass
+import time
+import pyvisa
 
 
-@dataclass(frozen=True)
-class OmhConfig:
-    resource: str
+class OMM6810B:
+    def __init__(self, resource_name="GPIB0::2::INSTR", timeout_ms=10000):
+        self.resource_name = resource_name
+        self.timeout_ms = timeout_ms
+        self.rm = None
+        self.inst = None
 
+    def connect(self):
+        self.rm = pyvisa.ResourceManager()
+        self.inst = self.rm.open_resource(self.resource_name)
 
-@dataclass(frozen=True)
-class OmhReading:
-    wavelength_nm: float
-    power_w: float
+        self.inst.timeout = self.timeout_ms
+        self.inst.write_termination = "\n"
+        self.inst.read_termination = "\n"
 
-    @property
-    def power_dbm(self) -> float:
-        if self.power_w <= 0:
-            return float("-inf")
-        return 10.0 * math.log10(self.power_w / 0.001)
+        return self
 
+    def close(self):
+        if self.inst is not None:
+            self.inst.close()
+        if self.rm is not None:
+            self.rm.close()
 
-class OmhClient:
-    """Minimal OMH interface.
+    def write(self, command: str):
+        self.inst.write(command)
 
-    The real GPIB command set should be added once the exact OMH model/manual is known.
-    """
+    def query(self, command: str) -> str:
+        return self.inst.query(command).strip()
 
-    def __init__(self, config: OmhConfig) -> None:
-        self.config = config
+    def initialize(self):
+        self.write("*CLS")
+        self.enable_power_autorange()
+        self.enable_wavelength_auto()
 
-    def connect(self) -> None:
-        raise NotImplementedError("Real OMH GPIB commands are not implemented yet.")
+    def identify_instrument(self) -> str:
+        return self.query("*IDN?")
 
-    def read(self) -> OmhReading:
-        raise NotImplementedError("Real OMH read command is not implemented yet.")
+    def identify_head(self) -> str:
+        return self.query("HEAD:IDN?")
 
-    def close(self) -> None:
-        return None
+    def enable_power_autorange(self):
+        self.write("RANGE:AUTO ON")
 
+    def disable_power_autorange(self):
+        self.write("RANGE:AUTO OFF")
 
-class SimulatedOmhClient:
-    def __init__(self, topo: object) -> None:
-        self._topo = topo
+    def enable_wavelength_auto(self):
+        self.write("WAVE:AUTO ON")
 
-    def connect(self) -> None:
-        return None
+    def disable_wavelength_auto(self):
+        self.write("WAVE:AUTO OFF")
 
-    def read(self) -> OmhReading:
-        setpoint = getattr(self._topo, "current_wavelength_nm", None)
-        wavelength_nm = 1500.0 if setpoint is None else float(setpoint)
-        measured_wavelength = wavelength_nm + random.uniform(-0.03, 0.03)
-        measured_power = 1.2e-3 * (1.0 + random.uniform(-0.04, 0.04))
-        return OmhReading(wavelength_nm=measured_wavelength, power_w=measured_power)
+    def get_power_w(self) -> float:
+        return float(self.query("POWER?"))
 
-    def close(self) -> None:
-        return None
+    def get_wavelength_nm(self) -> float:
+        return float(self.query("WAVE?"))
+
+    def zero(self, wait=True, poll_interval_s=1.0, timeout_s=30):
+        self.write("ZERO")
+
+        if not wait:
+            return
+
+        start = time.time()
+
+        while True:
+            if self.is_zero_done():
+                return
+
+            if time.time() - start > timeout_s:
+                raise TimeoutError("OMM zeroing did not finish within timeout.")
+
+            time.sleep(poll_interval_s)
+
+    def is_zero_done(self) -> bool:
+        return self.query("ZERO?") == "1"
+
+    def read_measurement(self) -> dict:
+        return {
+            "power_w": self.get_power_w(),
+            "wavelength_nm": self.get_wavelength_nm(),
+        }
