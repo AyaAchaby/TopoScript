@@ -8,7 +8,15 @@ from toposcript.experiments.omh_logger import log_omh_measurements
 os.makedirs("data/omh_logs", exist_ok=True)
 
 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-output_csv = f"data/omh_logs/omh_log_{timestamp}.csv"
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DATA_DIR = os.path.join(BASE_DIR, "data", "omh_logs")
+
+os.makedirs(DATA_DIR, exist_ok=True)
+
+output_csv = os.path.join(
+    DATA_DIR,
+    f"omh_log_{timestamp}.csv"
+)
 
 omm = OMM6810B().connect()
 
