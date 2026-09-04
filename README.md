@@ -1,54 +1,43 @@
 # TopoScript
 
-TopoScript is a small measurement-automation project for an optical setup built around a TOPO wavelength source and an OMH optical meter.
+TopoScript is a Python project for automating an optical measurement setup built around a TOPTICA TOPO tunable laser. It supports wavelength and optical power measurements, polarization-based power characterization, and currentâ€“voltage (IV) measurements of photonic power converters.
 
-The Phase 1 goal is intentionally simple:
+Developed at SUNLAB, University of Ottawa.
 
-- set TOPO wavelength points
-- read measured wavelength and power from the OMH
-- save timestamped sweep data to CSV
-- keep instrument drivers separated so future devices can be added cleanly
+## Main functions
 
-## Phase 1 Workflow
+- Set TOPO wavelength points and record measured wavelength and power from the OMH optical meter.
+- Measure optical power as a function of rotation angle to characterize polarization-based power control.
+- Run dark and illuminated IV measurements using a Keithley 2450 source meter.
+- Process IV data and extract parameters such as Isc, Voc, maximum power, and fill factor.
+- Provide a graphical dashboard for operating the setup.
+- Save measurement data locally for analysis.
 
-```text
-TOPO over IP -> set wavelength
-OMH over GPIB -> read wavelength and power
-TopoScript -> save setpoint, measured values, timestamp, and status
-```
+## Project layout
 
-## Project Layout
+| Folder | Contents |
+| --- | --- |
+| `toposcript/instruments/` | Instrument drivers and interfaces |
+| `toposcript/experiments/` | Measurement routines and IV parameters |
+| `toposcript/processing/` | Data processing and analysis |
+| `toposcript/gui/` | Dashboard interface |
+| `scripts/` | Scripts for launching measurements, the dashboard, and processing |
+| `config/` | Configuration files |
+| `data/` | Local measurement output; excluded from Git |
 
-```text
-toposcript/
-  instruments/
-    topo.py        # TOPO interface and simulator
-    omh.py         # OMH interface and simulator
-  sweep.py         # sweep logic
-scripts/
-  wavelength_sweep.py
-config/
-  example_sweep.toml
-data/
-  .gitkeep
-```
+## Getting started
 
-## Quick Dry Run
+Use the Python environment configured for the lab setup. Run scripts from the project root.
 
-The first version can run without instruments using simulated readings:
+Main entry points:
 
-```powershell
-python scripts/wavelength_sweep.py --config config/example_sweep.toml --simulate
-```
+- `scripts/run_dashboard.py` â€” measurement dashboard.
+- `scripts/run_light_iv.py` â€” illuminated IV measurements.
+- `scripts/run_angle_vs_power.py` â€” angle-versus-power measurements.
+- `scripts/process_light_iv_run.py` â€” processing of saved light-IV measurements.
 
-The output CSV will be written under `data/`.
+Before running a measurement, check the instrument connections and addresses, sample information, wavelength range, voltage range, current limit, and output location in the relevant script or configuration. Follow the lab's laser operating procedures.
 
-## Future Modules
+## Data
 
-Later phases can add:
-
-- optical power control
-- multimeter IV sweeps
-- temperature controller/probe logging
-- sample metadata
-- GUI or web dashboard
+Measurement files are stored locally under `data/`. This folder is excluded by `.gitignore`, so committing and pushing the repository does **not** back up measurement data. Copy it separately to the lab's agreed storage location.

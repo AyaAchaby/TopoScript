@@ -1,4 +1,12 @@
+# Experimental data
+data/
+
+# Visual Studio
 .vs/
+
+# Python cache
 __pycache__/
 *.pyc
-data/omh_logs/
+
+# Excel temp files
+~$*.xlsx
