@@ -1,6 +1,6 @@
 # TopoScript
 
-TopoScript is a Python project for automating an optical measurement setup built around a TOPTICA TOPO tunable laser. It supports wavelength and optical power measurements, polarization-based power characterization, and currentâ€“voltage (IV) measurements of photonic power converters.
+TopoScript is a Python project for automating an optical measurement setup built around a TOPTICA TOPO tunable laser. It supports wavelength and optical power measurements, polarization-based power characterization, and current-voltage (IV) measurements of photonic power converters.
 
 Developed at SUNLAB, University of Ottawa.
 
@@ -31,10 +31,10 @@ Use the Python environment configured for the lab setup. Run scripts from the pr
 
 Main entry points:
 
-- `scripts/run_dashboard.py` â€” measurement dashboard.
-- `scripts/run_light_iv.py` â€” illuminated IV measurements.
-- `scripts/run_angle_vs_power.py` â€” angle-versus-power measurements.
-- `scripts/process_light_iv_run.py` â€” processing of saved light-IV measurements.
+- `scripts/run_dashboard.py` measurement dashboard.
+- `scripts/run_light_iv.py` illuminated IV measurements.
+- `scripts/run_angle_vs_power.py` angle-versus-power measurements.
+- `scripts/process_light_iv_run.py` processing of saved light-IV measurements.
 
 Before running a measurement, check the instrument connections and addresses, sample information, wavelength range, voltage range, current limit, and output location in the relevant script or configuration. Follow the lab's laser operating procedures.
 
