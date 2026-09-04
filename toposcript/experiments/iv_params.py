@@ -1,5 +1,18 @@
 import numpy as np
 
+# === POST-PROCESSING SETTINGS ===
+CELL_AREA_CM2 = 0.054
+
+PROCESS_AFTER_RUN = True
+MAKE_PLOTS_AFTER_RUN = True
+
+USE_POWER_CALIBRATION = True
+POWER_CALIBRATION_CSV = r"C:\Users\aacha097\source\repos\AyaAchaby\TopoScript\data\processed\phase1_topo_characterization\run_20260618_141623\summary.csv"
+
+POWER_WAVELENGTH_COL = "target_wavelength_nm"
+POWER_COL = "mean_power_mw"
+POWER_MATCH_TOLERANCE_NM = 1.0
+
 
 def calculate_light_iv_params(voltage, current):
     V = np.array(voltage, dtype=float)

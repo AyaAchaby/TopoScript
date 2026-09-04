@@ -1,22 +1,22 @@
 from toposcript.instruments.keithley_2450 import Keithley2450
 from toposcript.experiments.light_iv import run_light_iv
 
-RESOURCE = "TCPIP0::169.254.81.187::5025::SOCKET"
+RESOURCE = "TCPIP0::169.254.184.154::5025::SOCKET"
 
 path = "data/light_iv"
 scan_type = "LightIV"
 sample_source = "SUNLAB"
-sample_name = "TestSample"
+sample_name = "C5776-X20Y10"
 user = "Aya"
 notes = ""
 lens_position = ""
 filter_name = "None"
 
-wavelength_list_nm = [1515,1525,1530,1550,1545,1570,1590]
+wavelength_list_nm = [1502,1507]
 
 start = -0.1
 stop = 1.3
-step = 0.02
+step = 0.5
 current_limit = 0.02
 nplc = 1
 
